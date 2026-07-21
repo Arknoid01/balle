@@ -29,7 +29,7 @@ function startTimer() {
         // Affichage du temps restant au format mm:ss
         const minutes = Math.floor(timeLeft / 60);
         const seconds = timeLeft % 60;
-        display.textContent += `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}\n`;
+        display.textContent = `Programme : ${inputText}\n${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}\n`;
 
         timeLeft--;
     }, 1000);
