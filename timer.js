@@ -2,7 +2,12 @@
 const timerInput = document.getElementById('timer-input');
 const durationSelect = document.getElementById('duration-select');
 const startButton = document.getElementById('start-button');
+const pauseButton = document.getElementById('pausebtn');
 const display = document.getElementById('display');
+
+// Variable pour gérer la pause
+let isPaused = false;
+let timerInterval = null;
 
 // Fonction pour démarrer le minuteur
 function startTimer() {
@@ -19,10 +24,11 @@ function startTimer() {
     display.textContent = `Programme : ${inputText}\n`;
 
     // Mise à jour de l'affichage toutes les secondes
-    const timerInterval = setInterval(() => {
+    timerInterval = setInterval(() => {
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
             display.textContent += "Temps écoulé !";
+            pauseButton.disabled = true;
             return;
         }
 
@@ -33,7 +39,25 @@ function startTimer() {
 
         timeLeft--;
     }, 1000);
+    
+    // Activer le bouton pause et désactiver le bouton start
+    pauseButton.disabled = false;
+    startButton.disabled = true;
 }
+
+// Gestion du bouton Pause/Reprendre
+pauseButton.addEventListener('click', function() {
+    if (!isPaused) {
+        // Pause
+        clearInterval(timerInterval);
+        isPaused = true;
+        pauseButton.textContent = "Reprendre";
+    } else {
+        // Reprendre
+        startTimer();
+        pauseButton.textContent = "Pause";
+    }
+});
 
 // Ajout de l'événement au bouton "Lancer"
 startButton.addEventListener('click', startTimer);
