@@ -73,8 +73,8 @@
 }
 
 /* Style pour le bouton pause */
-.timerbtn {
-  background-color: #FF9800;
+#pausebtn {
+  background-color: var(--primary-orange);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -88,9 +88,9 @@
   text-align: center;
 }
 
-.timerbtn:hover,
-.timerbtn:focus {
-  background-color: #E65100;
+#pausebtn:hover,
+#pausebtn:focus {
+  background-color: var(--dark-orange);
 }
 
 /* Responsive design pour le timer */
