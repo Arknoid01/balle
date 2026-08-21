@@ -9,13 +9,13 @@ const PROVIDERS = [
     name: 'groq',
     url: 'https://api.groq.com/openai/v1/chat/completions',
     key: process.env.GROQ_API_KEY,
-    model: 'openai/gpt-oss-20b', // remplace llama-3.1-8b-instant (retiré le 16/08/2026)
+    model: process.env.GROQ_MODEL || 'openai/gpt-oss-20b',
   },
   {
     name: 'openrouter',
     url: 'https://openrouter.ai/api/v1/chat/completions',
     key: process.env.OPENROUTER_API_KEY,
-    model: 'meta-llama/llama-3.1-8b-instruct',
+    model: process.env.OPENROUTER_MODEL || 'meta-llama/llama-3.1-8b-instruct',
   },
 ];
 
@@ -50,6 +50,9 @@ async function extractWithFallback(cleanedText, maxRetriesPerProvider = 2) {
 
     for (let attempt = 1; attempt <= maxRetriesPerProvider; attempt++) {
       try {
+        if (attempt === 1) {
+          console.log(`${provider.name}: modèle ${provider.model}`);
+        }
         const res = await fetch(provider.url, {
           method: 'POST',
           headers: {
@@ -75,7 +78,7 @@ async function extractWithFallback(cleanedText, maxRetriesPerProvider = 2) {
         }
         if (res.status === 404) {
           console.warn(
-            `${provider.name}: modèle introuvable (404) — ${provider.model} n'existe plus, mets à jour src/llm.js`
+            `${provider.name}: modèle introuvable (404) — ${provider.model} (change GROQ_MODEL / OPENROUTER_MODEL si besoin)`
           );
           break;
         }
