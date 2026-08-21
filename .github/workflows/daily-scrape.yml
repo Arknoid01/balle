@@ -1,8 +1,8 @@
 name: Daily scrape
 
 on:
-  schedule:
-    - cron: '0 6 * * *'
+  # schedule désactivé : le scrape quotidien tourne désormais en local (systemd timer sur le PC Arch)
+  # pour éviter les 403 anti-bot datacenter sur PAP/SeLoger/Logic-Immo. Lancement manuel toujours possible.
   workflow_dispatch:
 
 permissions:
