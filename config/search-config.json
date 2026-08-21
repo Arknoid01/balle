@@ -5,5 +5,5 @@
   },
   "budget_max": 280000,
   "property_type": "maison",
-  "land_min_m2": 10
+  "land_min_m2": 1000
 }
