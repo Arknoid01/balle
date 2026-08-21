@@ -39,6 +39,13 @@
       "search_url_template": ""
     },
     {
+      "id": "espacesatypiques",
+      "name": "Espaces Atypiques",
+      "active": true,
+      "notes": "Pas de JSON-LD sur /ventes/, fallback LLM (1 annonce/run seulement, limite du parseur générique). Pas de filtre géo par URL simple (autocomplete JS avec IDs opaques) — page nationale non filtrée. Positionnement haut de gamme/atypique : la plupart des annonces dépassent budget_max (280k€), seront filtrées après extraction. Pas de blocage anti-bot constaté en local.",
+      "search_url_template": "https://www.espaces-atypiques.com/ventes/"
+    },
+    {
       "id": "paruvendu",
       "name": "ParuVendu",
       "active": true,
