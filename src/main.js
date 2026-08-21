@@ -51,7 +51,19 @@ async function extractListingsFromHtml(html, sourceId) {
 async function run() {
   const config = loadJson(CONFIG_PATH);
   const { sites } = loadJson(SITES_PATH);
-  const activeSites = sites.filter((s) => s.active && s.search_url_template);
+  const isCi = process.env.CI === 'true';
+  const activeSites = sites.filter((s) => {
+    if (!s.active || !s.search_url_template) return false;
+    if (isCi && s.skip_in_ci) return false;
+    return true;
+  });
+
+  const skippedInCi = isCi ? sites.filter((s) => s.active && s.skip_in_ci) : [];
+  if (skippedInCi.length) {
+    console.log(
+      `Mode CI — site(s) ignoré(s) (anti-bot sur IP datacenter): ${skippedInCi.map((s) => s.id).join(', ')}`
+    );
+  }
 
   console.log(`Run démarré — ${activeSites.length} site(s) actif(s), config:`, config);
 

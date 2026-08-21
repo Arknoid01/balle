@@ -4,21 +4,24 @@
       "id": "pap",
       "name": "PAP (Particulier à Particulier)",
       "active": true,
-      "notes": "Que des annonces de particuliers (0 agence). Structure texte propre, pas de mur anti-bot détecté. Bon candidat prioritaire.",
+      "skip_in_ci": true,
+      "notes": "Que des annonces de particuliers (0 agence). Bloqué (403) depuis GitHub Actions — fonctionne en local. Bon candidat prioritaire.",
       "search_url_template": "https://www.pap.fr/annonce/vente-maisons-ain-01-g364"
     },
     {
       "id": "seloger",
       "name": "SeLoger",
       "active": true,
-      "notes": "Gros volume (agences + particuliers). Params exacts prix/surface à valider en live, structure de base confirmée.",
+      "skip_in_ci": true,
+      "notes": "Gros volume (agences + particuliers). Bloqué (403) depuis GitHub Actions — fonctionne en local.",
       "search_url_template": "https://www.seloger.com/recherche/achat/maison/auvergne-rhone-alpes/valserhone-01200/ad08fr37119"
     },
     {
       "id": "logicimmo",
       "name": "Logic-Immo",
       "active": true,
-      "notes": "Même groupe que SeLoger (BFM Immo), structure proche. Bonne couverture locale sur Valserhône.",
+      "skip_in_ci": true,
+      "notes": "Même groupe que SeLoger (BFM Immo). Bloqué (403) depuis GitHub Actions — fonctionne en local.",
       "search_url_template": "https://www.logic-immo.com/recherche-immo/vente/maison/auvergne-rhone-alpes/bellegarde-sur-valserine-01200/ad08fr31"
     },
     {
@@ -39,7 +42,7 @@
       "id": "paruvendu",
       "name": "ParuVendu",
       "active": true,
-      "notes": "Site suggéré en plus (pas dans la liste initiale) : bon volume sur Valserhône (28 annonces), mix particuliers/agences, structure texte simple similaire à PAP.",
+      "notes": "Fonctionne depuis GitHub Actions (parseur HTML dédié, pas d'anti-bot sur les IP datacenter).",
       "search_url_template": "https://www.paruvendu.fr/immobilier/vente/maison/bellegarde-sur-valserine-01200/"
     }
   ]
