@@ -9,7 +9,7 @@ const PROVIDERS = [
     name: 'groq',
     url: 'https://api.groq.com/openai/v1/chat/completions',
     key: process.env.GROQ_API_KEY,
-    model: 'llama-3.1-8b-instant',
+    model: 'openai/gpt-oss-20b', // remplace llama-3.1-8b-instant (retiré le 16/08/2026)
   },
   {
     name: 'openrouter',
@@ -73,12 +73,19 @@ async function extractWithFallback(cleanedText, maxRetriesPerProvider = 2) {
           console.warn(`${provider.name}: clé API invalide (401) — ${hint}, puis mets à jour le secret GitHub`);
           break;
         }
+        if (res.status === 404) {
+          console.warn(
+            `${provider.name}: modèle introuvable (404) — ${provider.model} n'existe plus, mets à jour src/llm.js`
+          );
+          break;
+        }
         if (res.status === 429 || res.status === 503) {
           console.warn(`${provider.name}: quota/limite atteint (${res.status}), switch provider`);
           break;
         }
         if (!res.ok) {
-          throw new Error(`${provider.name} HTTP ${res.status}`);
+          const detail = (await res.text()).slice(0, 200);
+          throw new Error(`${provider.name} HTTP ${res.status}${detail ? `: ${detail}` : ''}`);
         }
 
         const data = await res.json();

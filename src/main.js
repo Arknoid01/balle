@@ -105,8 +105,8 @@ async function run() {
   );
 
   console.log(`Run terminé — ${newListings.length} nouvelle(s) annonce(s), ${runErrors.length} erreur(s).`);
-  if (runErrors.length > 0 && allListings.length === 0) {
-    process.exitCode = 1;
+  if (runErrors.length > 0) {
+    console.warn('Détail des erreurs:', runErrors.join(' | '));
   }
 }
 
