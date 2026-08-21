@@ -12,6 +12,7 @@ const { cleanHtml } = require('./clean');
 const { extractWithFallback } = require('./llm');
 const { diffListings, saveSeen } = require('./diff');
 const { fetchLbcAlerts } = require('./email-lbc');
+const { extractFromSearchHtml } = require('./paruvendu');
 
 const SITES_PATH = path.join(__dirname, '..', 'sites', 'sites.json');
 const CONFIG_PATH = path.join(__dirname, '..', 'config', 'search-config.json');
@@ -27,6 +28,14 @@ function loadJson(p) {
  * essaie JSON-LD d'abord, sinon fallback LLM sur le texte nettoyé.
  */
 async function extractListingsFromHtml(html, sourceId) {
+  if (sourceId === 'paruvendu') {
+    const viaParuvendu = extractFromSearchHtml(html);
+    if (viaParuvendu.length > 0) {
+      console.log(`[${sourceId}] extraction HTML (${viaParuvendu.length} annonce(s))`);
+      return viaParuvendu;
+    }
+  }
+
   const viaJsonLd = extractViaJsonLd(html);
   if (viaJsonLd.length > 0) {
     console.log(`[${sourceId}] extraction via JSON-LD (${viaJsonLd.length} annonce(s))`);
