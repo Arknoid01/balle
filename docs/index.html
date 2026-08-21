@@ -323,8 +323,8 @@
       <div class="eyebrow">Comptes &amp; clés</div>
       <h2>Secrets GitHub Actions</h2>
       <p style="color:var(--ink-soft); font-size:0.85rem; margin-bottom:1rem;">
-        Les valeurs déjà enregistrées ne sont jamais affichées (GitHub ne les restitue pas) — seul leur statut
-        « configuré / manquant » est visible. Renseigner un champ et valider l'écrase.
+        Renseigne ici ta clé Groq / OpenRouter (pas dans le champ « Token » en haut — celui-ci est ton token GitHub).
+        Les valeurs déjà enregistrées ne sont jamais affichées — seul leur statut « configuré / manquant » est visible.
       </p>
       <div class="secret-list" id="secrets-status-list"></div>
       <div class="field-row" id="secrets-inputs"></div>
@@ -404,6 +404,13 @@ function setStatus(el, msg, ok) {
   el.className = 'status-line ' + (ok === true ? 'ok' : ok === false ? 'err' : '');
 }
 
+function formatError(err) {
+  if (!err) return 'erreur inconnue';
+  if (typeof err === 'string') return err;
+  if (err.message) return err.message;
+  return String(err);
+}
+
 // ---------- Portail d'accès ----------
 const gateStatus = document.getElementById('gate-status');
 const connectBtn = document.getElementById('connect-btn');
@@ -433,7 +440,7 @@ async function tryConnect(owner, repo, token) {
     clearCreds();
     const msg = err.name === 'TimeoutError'
       ? 'Délai dépassé — vérifie ta connexion ou un bloqueur (CORS/adblock).'
-      : `Connexion impossible : ${err.message}`;
+      : `Connexion impossible : ${formatError(err)}`;
     setStatus(gateStatus, msg, false);
   } finally {
     connectBtn.disabled = false;
@@ -468,11 +475,24 @@ disconnectBtn.addEventListener('click', () => {
 })();
 
 // ---------- Critères de recherche ----------
+function utf8ToBase64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach((b) => { binary += String.fromCharCode(b); });
+  return btoa(binary);
+}
+
+function base64ToUtf8(b64) {
+  const binary = atob(b64.replace(/\s/g, ''));
+  const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+  return new TextDecoder().decode(bytes);
+}
+
 async function loadConfig() {
   const res = await ghFetch('/contents/config/search-config.json');
   if (!res.ok) return null;
   const data = await res.json();
-  const content = JSON.parse(atob(data.content));
+  const content = JSON.parse(base64ToUtf8(data.content));
   return { content, sha: data.sha };
 }
 
@@ -504,14 +524,14 @@ document.getElementById('save-config-btn').addEventListener('click', async () =>
       method: 'PUT',
       body: JSON.stringify({
         message: 'Mise à jour des critères de recherche (via dashboard)',
-        content: btoa(JSON.stringify(newConfig, null, 2)),
+        content: utf8ToBase64(JSON.stringify(newConfig, null, 2)),
         sha: loaded?.sha,
       }),
     });
     if (res.ok) setStatus(statusEl, 'Critères enregistrés — pris en compte au prochain run.', true);
     else setStatus(statusEl, `Erreur (${res.status})`, false);
   } catch (err) {
-    setStatus(statusEl, `Erreur: ${err.message}`, false);
+    setStatus(statusEl, `Erreur: ${formatError(err)}`, false);
   }
 });
 
@@ -555,25 +575,46 @@ async function loadSecretsStatus() {
   `).join('');
 }
 
-// Encodage libsodium chargé à la demande (évite de bloquer le chargement initial)
+// Chiffrement libsodium (embarqué localement — l'ancien CDN renvoyait 404)
 let sodiumReady = null;
 function loadSodium() {
   if (sodiumReady) return sodiumReady;
+
   sodiumReady = new Promise((resolve, reject) => {
+    const done = (lib) => {
+      if (lib && typeof lib.crypto_box_seal === 'function') {
+        resolve(lib);
+        return true;
+      }
+      return false;
+    };
+
+    if (done(window.libsodium)) return;
+
     const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/libsodium-wrappers/0.7.13/sodium.js';
-    script.onload = () => window.sodium.ready.then(() => resolve(window.sodium));
-    script.onerror = reject;
+    script.src = './vendor/sodium.min.js';
+    script.onload = () => {
+      const deadline = Date.now() + 15000;
+      const wait = () => {
+        if (done(window.libsodium)) return;
+        if (Date.now() > deadline) {
+          reject(new Error('libsodium n\'a pas pu s\'initialiser'));
+          return;
+        }
+        setTimeout(wait, 50);
+      };
+      wait();
+    };
+    script.onerror = () => reject(new Error('Impossible de charger libsodium (vendor/sodium.min.js)'));
     document.head.appendChild(script);
   });
+
   return sodiumReady;
 }
 
-async function encryptSecret(sodium, publicKeyB64, value) {
-  const binKey = sodium.from_base64(publicKeyB64, sodium.base64_variants.ORIGINAL);
-  const binValue = sodium.from_string(value);
-  const encBytes = sodium.crypto_box_seal(binValue, binKey);
-  return sodium.to_base64(encBytes, sodium.base64_variants.ORIGINAL);
+function encryptSecret(sodium, publicKeyB64, value) {
+  const binKey = sodium.from_base64(publicKeyB64);
+  return sodium.crypto_box_seal(value, binKey, 'base64');
 }
 
 document.getElementById('save-secrets-btn').addEventListener('click', async () => {
@@ -600,13 +641,20 @@ document.getElementById('save-secrets-btn').addEventListener('click', async () =
         method: 'PUT',
         body: JSON.stringify({ encrypted_value, key_id }),
       });
-      if (!putRes.ok) throw new Error(`${s.key}: HTTP ${putRes.status}`);
+      if (!putRes.ok) {
+        let detail = '';
+        try {
+          const body = await putRes.json();
+          detail = body.message ? ` — ${body.message}` : '';
+        } catch { /* ignore */ }
+        throw new Error(`${s.key}: ${describeGhError(putRes.status)}${detail}`);
+      }
       document.getElementById(`secret-${s.key}`).value = '';
     }
     setStatus(statusEl, `${toSave.length} secret(s) mis à jour.`, true);
     loadSecretsStatus();
   } catch (err) {
-    setStatus(statusEl, `Erreur: ${err.message}`, false);
+    setStatus(statusEl, `Erreur: ${formatError(err)}`, false);
   }
 });
 
@@ -659,7 +707,7 @@ document.getElementById('trigger-run-btn').addEventListener('click', async () =>
       setStatus(statusEl, `Erreur (${res.status})`, false);
     }
   } catch (err) {
-    setStatus(statusEl, `Erreur: ${err.message}`, false);
+    setStatus(statusEl, `Erreur: ${formatError(err)}`, false);
   }
 });
 
