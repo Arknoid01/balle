@@ -6,6 +6,7 @@
 <title>Repérage — Scraper Immo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/libsodium-wrappers/0.5.4/sodium.min.js"></script>
 <style>
   :root {
     --paper: #EDE7D9;
@@ -575,39 +576,84 @@ async function loadSecretsStatus() {
   `).join('');
 }
 
-// Chiffrement libsodium (embarqué localement — l'ancien CDN renvoyait 404)
+// Chiffrement libsodium (préchargé dans <head>, fallback local + CDN)
+const SODIUM_SCRIPT_URLS = [
+  'vendor/sodium.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/libsodium-wrappers/0.5.4/sodium.min.js',
+];
+
 let sodiumReady = null;
+
+function isSodiumReady(lib) {
+  return lib && typeof lib.crypto_box_seal === 'function' && typeof lib.from_base64 === 'function';
+}
+
+function waitForSodiumLib(timeoutMs = 60000) {
+  return new Promise((resolve, reject) => {
+    if (isSodiumReady(window.libsodium)) {
+      resolve(window.libsodium);
+      return;
+    }
+
+    const lib = window.libsodium;
+    if (lib) {
+      const prev = lib.onRuntimeInitialized;
+      lib.onRuntimeInitialized = function () {
+        if (typeof prev === 'function') prev();
+        if (isSodiumReady(window.libsodium)) resolve(window.libsodium);
+      };
+    }
+
+    const deadline = Date.now() + timeoutMs;
+    const poll = () => {
+      if (isSodiumReady(window.libsodium)) {
+        resolve(window.libsodium);
+        return;
+      }
+      if (Date.now() > deadline) {
+        reject(new Error('libsodium n\'a pas pu s\'initialiser — vérifie ta connexion ou désactive ton bloqueur'));
+        return;
+      }
+      setTimeout(poll, 100);
+    };
+    poll();
+  });
+}
+
+function injectSodiumScript(url) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = url;
+    script.onload = () => resolve(url);
+    script.onerror = () => reject(new Error(`Impossible de charger ${url}`));
+    document.head.appendChild(script);
+  });
+}
+
 function loadSodium() {
   if (sodiumReady) return sodiumReady;
 
-  sodiumReady = new Promise((resolve, reject) => {
-    const done = (lib) => {
-      if (lib && typeof lib.crypto_box_seal === 'function') {
-        resolve(lib);
-        return true;
-      }
-      return false;
-    };
+  sodiumReady = (async () => {
+    // Attend le script préchargé dans le <head> (CDN)
+    try {
+      return await waitForSodiumLib(60000);
+    } catch {
+      // Fallback si le CDN est bloqué
+    }
 
-    if (done(window.libsodium)) return;
-
-    const script = document.createElement('script');
-    script.src = './vendor/sodium.min.js';
-    script.onload = () => {
-      const deadline = Date.now() + 15000;
-      const wait = () => {
-        if (done(window.libsodium)) return;
-        if (Date.now() > deadline) {
-          reject(new Error('libsodium n\'a pas pu s\'initialiser'));
-          return;
+    for (const url of SODIUM_SCRIPT_URLS) {
+      try {
+        if (!isSodiumReady(window.libsodium)) {
+          await injectSodiumScript(new URL(url, location.href).href);
         }
-        setTimeout(wait, 50);
-      };
-      wait();
-    };
-    script.onerror = () => reject(new Error('Impossible de charger libsodium (vendor/sodium.min.js)'));
-    document.head.appendChild(script);
-  });
+        return await waitForSodiumLib(60000);
+      } catch {
+        delete window.libsodium;
+      }
+    }
+
+    throw new Error('libsodium indisponible — recharge la page ou configure les secrets manuellement dans GitHub (Settings → Secrets → Actions)');
+  })();
 
   return sodiumReady;
 }
