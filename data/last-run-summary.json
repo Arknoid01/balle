@@ -1,1 +1,10 @@
-{"run_at": null, "new_count": 0, "newListings": []}
+{
+  "run_at": "2026-08-21T20:01:32.028Z",
+  "new_count": 0,
+  "newListings": [],
+  "errors": [
+    "[pap] fetch échoué: HTTP 403",
+    "[seloger] fetch échoué: HTTP 403",
+    "[logicimmo] fetch échoué: HTTP 403"
+  ]
+}
