@@ -66,9 +66,11 @@ async function extractWithFallback(cleanedText, maxRetriesPerProvider = 2) {
         });
 
         if (res.status === 401) {
-          console.warn(
-            `${provider.name}: clé API invalide (401) — regénère-la sur console.groq.com ou openrouter.ai et mets à jour le secret GitHub`
-          );
+          const hint =
+            provider.name === 'groq'
+              ? 'regénère-la sur console.groq.com'
+              : 'regénère-la sur openrouter.ai';
+          console.warn(`${provider.name}: clé API invalide (401) — ${hint}, puis mets à jour le secret GitHub`);
           break;
         }
         if (res.status === 429 || res.status === 503) {
