@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Repérage — Scraper Immo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EDE7D9;
+    --paper-light: #F5F1E7;
+    --ink: #232A22;
+    --ink-soft: #4B5347;
+    --moss: #4A6741;
+    --moss-light: #6B8A61;
+    --ochre: #C9A227;
+    --slate: #3B5566;
+    --rust: #A8432E;
+    --line: rgba(35, 42, 34, 0.18);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(35,42,34,0.06) 1px, transparent 0);
+    background-size: 24px 24px;
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+  }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  h1, h2, h3 { font-family: 'Fraunces', serif; margin: 0; }
+
+  header.hero {
+    padding: 3rem 1.5rem 2.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+  }
+
+  .plot-diagram {
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 1.5rem;
+    position: relative;
+  }
+  .plot-diagram svg { width: 100%; height: 100%; }
+  .plot-diagram circle {
+    fill: none;
+    stroke: var(--moss);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+  }
+  .plot-diagram .center {
+    fill: var(--rust);
+  }
+  .plot-diagram text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6px;
+    fill: var(--ink-soft);
+  }
+
+  header.hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  header.hero p {
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    margin-top: 0.5rem;
+  }
+
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+  }
+
+  section.card {
+    background: var(--paper-light);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  section.card > .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--moss);
+    margin-bottom: 0.35rem;
+  }
+  section.card > h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  label {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    margin-bottom: 0.3rem;
+  }
+  input[type="text"], input[type="number"], input[type="password"] {
+    width: 100%;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--ink);
+  }
+  input:focus { outline: 2px solid var(--slate); outline-offset: 1px; }
+
+  button {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    border: none;
+    border-radius: 3px;
+    padding: 0.65rem 1.1rem;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  button:hover { opacity: 0.88; }
+  button:focus-visible { outline: 2px solid var(--slate); outline-offset: 2px; }
+  button.primary { background: var(--moss); color: #fff; }
+  button.secondary { background: transparent; color: var(--slate); border: 1px solid var(--slate); }
+  button.danger { background: var(--rust); color: #fff; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .status-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    margin-top: 0.6rem;
+    min-height: 1.2em;
+  }
+  .status-line.ok { color: var(--moss); }
+  .status-line.err { color: var(--rust); }
+
+  .secret-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.25rem; }
+  .secret-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.5rem 0.7rem; background: #fff; border: 1px solid var(--line); border-radius: 3px;
+  }
+  .secret-row .name { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+  }
+  .badge.set { background: rgba(74,103,65,0.15); color: var(--moss); }
+  .badge.unset { background: rgba(168,67,46,0.12); color: var(--rust); }
+
+  .runs-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .run-row {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.6rem 0.7rem; background: #fff; border: 1px solid var(--line); border-radius: 3px;
+    font-size: 0.85rem;
+  }
+  .run-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .run-dot.success { background: var(--moss); }
+  .run-dot.failure { background: var(--rust); }
+  .run-dot.in_progress, .run-dot.queued { background: var(--ochre); }
+  .run-row .when { color: var(--ink-soft); margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+
+  .listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+  .plot-card {
+    background: #fff;
+    border: 1.5px dashed var(--ink-soft);
+    border-radius: 2px;
+    padding: 1rem;
+    position: relative;
+  }
+  .plot-card .price {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 1.15rem;
+    color: var(--slate);
+  }
+  .plot-card .title {
+    font-size: 0.92rem;
+    margin: 0.4rem 0 0.6rem;
+    color: var(--ink);
+  }
+  .plot-card .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .plot-card a {
+    display: inline-block;
+    margin-top: 0.7rem;
+    color: var(--slate);
+    font-size: 0.82rem;
+    text-decoration: none;
+    border-bottom: 1px solid var(--slate);
+  }
+  .plot-card .site-tag {
+    position: absolute; top: 0.7rem; right: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--ochre);
+    text-transform: uppercase;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+  }
+
+  .token-gate {
+    max-width: 480px;
+    margin: 4rem auto;
+    text-align: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="plot-diagram">
+    <svg viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45"/>
+      <circle cx="50" cy="50" r="45" class="center" r="3"/>
+      <text x="50" y="8" text-anchor="middle">30 KM</text>
+    </svg>
+  </div>
+  <h1>Repérage</h1>
+  <p>Scraper immobilier personnel — Valserhône &amp; alentours</p>
+</header>
+
+<main>
+
+  <!-- Portail d'accès token -->
+  <section class="card token-gate" id="gate">
+    <div class="eyebrow">Accès</div>
+    <h2>Jeton GitHub</h2>
+    <p style="color:var(--ink-soft); font-size:0.88rem; margin: 0.5rem 0 1rem;">
+      Un Personal Access Token (scope <code class="mono">repo</code>) est nécessaire pour éditer les critères,
+      gérer les secrets et déclencher les runs. Il reste stocké uniquement dans ton navigateur.
+    </p>
+    <div class="field-row">
+      <div>
+        <label for="gh-owner">Propriétaire</label>
+        <input type="text" id="gh-owner" placeholder="ton-user-github">
+      </div>
+      <div>
+        <label for="gh-repo">Dépôt</label>
+        <input type="text" id="gh-repo" placeholder="scraper-immo">
+      </div>
+    </div>
+    <label for="gh-token">Token</label>
+    <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx">
+    <div style="margin-top:1rem;">
+      <button class="primary" id="connect-btn">Se connecter</button>
+      <button class="secondary" id="disconnect-btn" style="display:none;">Déconnecter</button>
+    </div>
+    <div class="status-line" id="gate-status"></div>
+  </section>
+
+  <div id="app" style="display:none;">
+
+    <!-- Critères de recherche -->
+    <section class="card">
+      <div class="eyebrow">Plan de recherche</div>
+      <h2>Critères</h2>
+      <div class="field-row">
+        <div>
+          <label for="cfg-center">Centre</label>
+          <input type="text" id="cfg-center">
+        </div>
+        <div>
+          <label for="cfg-radius">Rayon (km)</label>
+          <input type="number" id="cfg-radius">
+        </div>
+        <div>
+          <label for="cfg-budget">Budget max (€)</label>
+          <input type="number" id="cfg-budget" step="1000">
+        </div>
+        <div>
+          <label for="cfg-land">Terrain min (m²)</label>
+          <input type="number" id="cfg-land">
+        </div>
+      </div>
+      <button class="primary" id="save-config-btn">Enregistrer les critères</button>
+      <div class="status-line" id="config-status"></div>
+    </section>
+
+    <!-- Gestion des secrets -->
+    <section class="card">
+      <div class="eyebrow">Comptes &amp; clés</div>
+      <h2>Secrets GitHub Actions</h2>
+      <p style="color:var(--ink-soft); font-size:0.85rem; margin-bottom:1rem;">
+        Les valeurs déjà enregistrées ne sont jamais affichées (GitHub ne les restitue pas) — seul leur statut
+        « configuré / manquant » est visible. Renseigner un champ et valider l'écrase.
+      </p>
+      <div class="secret-list" id="secrets-status-list"></div>
+      <div class="field-row" id="secrets-inputs"></div>
+      <button class="primary" id="save-secrets-btn">Enregistrer les clés renseignées</button>
+      <div class="status-line" id="secrets-status-msg"></div>
+    </section>
+
+    <!-- Automatisation -->
+    <section class="card">
+      <div class="eyebrow">Automatisation</div>
+      <h2>Runs GitHub Actions</h2>
+      <button class="primary" id="trigger-run-btn">Lancer un run maintenant</button>
+      <button class="secondary" id="refresh-runs-btn">Actualiser</button>
+      <div class="status-line" id="runs-status"></div>
+      <div class="runs-list" id="runs-list" style="margin-top:1rem;"></div>
+    </section>
+
+    <!-- Annonces -->
+    <section class="card">
+      <div class="eyebrow">Parcelles repérées</div>
+      <h2>Annonces</h2>
+      <div id="listings-container">
+        <div class="empty-state">Chargement…</div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script>
+const GITHUB_API = 'https://api.github.com';
+
+// ---------- État / connexion ----------
+function getCreds() {
+  return {
+    owner: localStorage.getItem('scraper_gh_owner') || '',
+    repo: localStorage.getItem('scraper_gh_repo') || '',
+    token: localStorage.getItem('scraper_gh_token') || '',
+  };
+}
+function setCreds(owner, repo, token) {
+  localStorage.setItem('scraper_gh_owner', owner);
+  localStorage.setItem('scraper_gh_repo', repo);
+  localStorage.setItem('scraper_gh_token', token);
+}
+function clearCreds() {
+  localStorage.removeItem('scraper_gh_owner');
+  localStorage.removeItem('scraper_gh_repo');
+  localStorage.removeItem('scraper_gh_token');
+}
+
+async function ghFetch(path, options = {}) {
+  const { owner, repo, token } = getCreds();
+  const res = await fetch(`${GITHUB_API}/repos/${owner}/${repo}${path}`, {
+    ...options,
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/vnd.github+json',
+      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+      ...options.headers,
+    },
+  });
+  return res;
+}
+
+function setStatus(el, msg, ok) {
+  el.textContent = msg;
+  el.className = 'status-line ' + (ok === true ? 'ok' : ok === false ? 'err' : '');
+}
+
+// ---------- Portail d'accès ----------
+const gateStatus = document.getElementById('gate-status');
+const connectBtn = document.getElementById('connect-btn');
+const disconnectBtn = document.getElementById('disconnect-btn');
+
+async function tryConnect(owner, repo, token) {
+  setCreds(owner, repo, token);
+  setStatus(gateStatus, 'Vérification…');
+  const res = await ghFetch('');
+  if (res.ok) {
+    setStatus(gateStatus, 'Connecté.', true);
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('gh-owner').disabled = true;
+    document.getElementById('gh-repo').disabled = true;
+    document.getElementById('gh-token').disabled = true;
+    connectBtn.style.display = 'none';
+    disconnectBtn.style.display = 'inline-block';
+    initApp();
+  } else {
+    clearCreds();
+    setStatus(gateStatus, `Échec (${res.status}) — vérifie owner/repo/token.`, false);
+  }
+}
+
+connectBtn.addEventListener('click', () => {
+  const owner = document.getElementById('gh-owner').value.trim();
+  const repo = document.getElementById('gh-repo').value.trim();
+  const token = document.getElementById('gh-token').value.trim();
+  if (!owner || !repo || !token) {
+    setStatus(gateStatus, 'Remplis les trois champs.', false);
+    return;
+  }
+  tryConnect(owner, repo, token);
+});
+
+disconnectBtn.addEventListener('click', () => {
+  clearCreds();
+  location.reload();
+});
+
+// Auto-connect si déjà en mémoire
+(function initGate() {
+  const { owner, repo, token } = getCreds();
+  if (owner && repo && token) {
+    document.getElementById('gh-owner').value = owner;
+    document.getElementById('gh-repo').value = repo;
+    document.getElementById('gh-token').value = token;
+    tryConnect(owner, repo, token);
+  }
+})();
+
+// ---------- Critères de recherche ----------
+async function loadConfig() {
+  const res = await ghFetch('/contents/config/search-config.json');
+  if (!res.ok) return null;
+  const data = await res.json();
+  const content = JSON.parse(atob(data.content));
+  return { content, sha: data.sha };
+}
+
+async function initConfigForm() {
+  const loaded = await loadConfig();
+  if (!loaded) return;
+  const { content } = loaded;
+  document.getElementById('cfg-center').value = content.location?.center || '';
+  document.getElementById('cfg-radius').value = content.location?.radius_km || '';
+  document.getElementById('cfg-budget').value = content.budget_max || '';
+  document.getElementById('cfg-land').value = content.land_min_m2 || '';
+}
+
+document.getElementById('save-config-btn').addEventListener('click', async () => {
+  const statusEl = document.getElementById('config-status');
+  setStatus(statusEl, 'Enregistrement…');
+  try {
+    const loaded = await loadConfig();
+    const newConfig = {
+      location: {
+        center: document.getElementById('cfg-center').value,
+        radius_km: Number(document.getElementById('cfg-radius').value),
+      },
+      budget_max: Number(document.getElementById('cfg-budget').value),
+      property_type: loaded?.content?.property_type || 'maison',
+      land_min_m2: Number(document.getElementById('cfg-land').value),
+    };
+    const res = await ghFetch('/contents/config/search-config.json', {
+      method: 'PUT',
+      body: JSON.stringify({
+        message: 'Mise à jour des critères de recherche (via dashboard)',
+        content: btoa(JSON.stringify(newConfig, null, 2)),
+        sha: loaded?.sha,
+      }),
+    });
+    if (res.ok) setStatus(statusEl, 'Critères enregistrés — pris en compte au prochain run.', true);
+    else setStatus(statusEl, `Erreur (${res.status})`, false);
+  } catch (err) {
+    setStatus(statusEl, `Erreur: ${err.message}`, false);
+  }
+});
+
+// ---------- Secrets ----------
+const SECRET_NAMES = [
+  { key: 'GROQ_API_KEY', label: 'Groq API Key' },
+  { key: 'OPENROUTER_API_KEY', label: 'OpenRouter API Key' },
+  { key: 'LBC_EMAIL_HOST', label: 'IMAP Host (LBC)' },
+  { key: 'LBC_EMAIL_USER', label: 'IMAP User (LBC)' },
+  { key: 'LBC_EMAIL_PASS', label: 'IMAP Mot de passe app (LBC)' },
+  { key: 'LBC_EMAIL_SENDER', label: 'Expéditeur alertes LBC' },
+  { key: 'NOTIFY_EMAIL_USER', label: 'Compte email envoyeur' },
+  { key: 'NOTIFY_EMAIL_PASS', label: 'Mot de passe app envoyeur' },
+  { key: 'NOTIFY_EMAIL_TO', label: 'Email destinataire' },
+];
+
+function renderSecretInputs() {
+  const container = document.getElementById('secrets-inputs');
+  container.innerHTML = SECRET_NAMES.map(s => `
+    <div>
+      <label for="secret-${s.key}">${s.label}</label>
+      <input type="password" id="secret-${s.key}" placeholder="•••• (laisser vide pour ne pas modifier)">
+    </div>
+  `).join('');
+}
+
+async function loadSecretsStatus() {
+  const res = await ghFetch('/actions/secrets');
+  const listEl = document.getElementById('secrets-status-list');
+  if (!res.ok) {
+    listEl.innerHTML = `<div class="status-line err">Impossible de lister les secrets (${res.status})</div>`;
+    return;
+  }
+  const data = await res.json();
+  const existing = new Set((data.secrets || []).map(s => s.name));
+  listEl.innerHTML = SECRET_NAMES.map(s => `
+    <div class="secret-row">
+      <span class="name">${s.key}</span>
+      <span class="badge ${existing.has(s.key) ? 'set' : 'unset'}">${existing.has(s.key) ? 'configuré' : 'manquant'}</span>
+    </div>
+  `).join('');
+}
+
+// Encodage libsodium chargé à la demande (évite de bloquer le chargement initial)
+let sodiumReady = null;
+function loadSodium() {
+  if (sodiumReady) return sodiumReady;
+  sodiumReady = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/libsodium-wrappers/0.7.13/sodium.js';
+    script.onload = () => window.sodium.ready.then(() => resolve(window.sodium));
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+  return sodiumReady;
+}
+
+async function encryptSecret(sodium, publicKeyB64, value) {
+  const binKey = sodium.from_base64(publicKeyB64, sodium.base64_variants.ORIGINAL);
+  const binValue = sodium.from_string(value);
+  const encBytes = sodium.crypto_box_seal(binValue, binKey);
+  return sodium.to_base64(encBytes, sodium.base64_variants.ORIGINAL);
+}
+
+document.getElementById('save-secrets-btn').addEventListener('click', async () => {
+  const statusEl = document.getElementById('secrets-status-msg');
+  const toSave = SECRET_NAMES
+    .map(s => ({ ...s, value: document.getElementById(`secret-${s.key}`).value }))
+    .filter(s => s.value.trim().length > 0);
+
+  if (toSave.length === 0) {
+    setStatus(statusEl, 'Aucun champ rempli.', false);
+    return;
+  }
+
+  setStatus(statusEl, 'Chiffrement et envoi…');
+  try {
+    const sodium = await loadSodium();
+    const keyRes = await ghFetch('/actions/secrets/public-key');
+    if (!keyRes.ok) throw new Error(`clé publique: HTTP ${keyRes.status}`);
+    const { key, key_id } = await keyRes.json();
+
+    for (const s of toSave) {
+      const encrypted_value = await encryptSecret(sodium, key, s.value);
+      const putRes = await ghFetch(`/actions/secrets/${s.key}`, {
+        method: 'PUT',
+        body: JSON.stringify({ encrypted_value, key_id }),
+      });
+      if (!putRes.ok) throw new Error(`${s.key}: HTTP ${putRes.status}`);
+      document.getElementById(`secret-${s.key}`).value = '';
+    }
+    setStatus(statusEl, `${toSave.length} secret(s) mis à jour.`, true);
+    loadSecretsStatus();
+  } catch (err) {
+    setStatus(statusEl, `Erreur: ${err.message}`, false);
+  }
+});
+
+// ---------- Runs GitHub Actions ----------
+const WORKFLOW_FILE = 'daily-scrape.yml';
+
+async function loadRuns() {
+  const listEl = document.getElementById('runs-list');
+  const res = await ghFetch(`/actions/workflows/${WORKFLOW_FILE}/runs?per_page=8`);
+  if (!res.ok) {
+    listEl.innerHTML = `<div class="status-line err">Impossible de charger les runs (${res.status})</div>`;
+    return;
+  }
+  const data = await res.json();
+  if (!data.workflow_runs || data.workflow_runs.length === 0) {
+    listEl.innerHTML = '<div class="empty-state">Aucun run pour l\'instant.</div>';
+    return;
+  }
+  listEl.innerHTML = data.workflow_runs.map(run => {
+    const dotClass = run.status === 'completed' ? (run.conclusion || 'failure') : run.status;
+    const when = new Date(run.created_at).toLocaleString('fr-FR');
+    return `
+      <div class="run-row">
+        <span class="run-dot ${dotClass}"></span>
+        <span>${run.status === 'completed' ? (run.conclusion === 'success' ? 'Succès' : 'Échec') : 'En cours'}</span>
+        <a href="${run.html_url}" target="_blank" style="color:var(--slate);">détails ↗</a>
+        <span class="when">${when}</span>
+      </div>`;
+  }).join('');
+}
+
+document.getElementById('refresh-runs-btn').addEventListener('click', loadRuns);
+
+document.getElementById('trigger-run-btn').addEventListener('click', async () => {
+  const statusEl = document.getElementById('runs-status');
+  setStatus(statusEl, 'Déclenchement…');
+  try {
+    const repoRes = await ghFetch('');
+    const repoData = await repoRes.json();
+    const defaultBranch = repoData.default_branch || 'main';
+
+    const res = await ghFetch(`/actions/workflows/${WORKFLOW_FILE}/dispatches`, {
+      method: 'POST',
+      body: JSON.stringify({ ref: defaultBranch }),
+    });
+    if (res.status === 204) {
+      setStatus(statusEl, 'Run déclenché — actualise dans quelques secondes.', true);
+      setTimeout(loadRuns, 4000);
+    } else {
+      setStatus(statusEl, `Erreur (${res.status})`, false);
+    }
+  } catch (err) {
+    setStatus(statusEl, `Erreur: ${err.message}`, false);
+  }
+});
+
+// ---------- Annonces ----------
+async function loadListings() {
+  const container = document.getElementById('listings-container');
+  try {
+    const res = await fetch('./results.json', { cache: 'no-store' });
+    const listings = res.ok ? await res.json() : [];
+    if (!listings.length) {
+      container.innerHTML = '<div class="empty-state">Aucune parcelle repérée pour l\'instant. Le prochain run remplira cette section.</div>';
+      return;
+    }
+    const sorted = listings.slice().sort((a, b) => (a.price || Infinity) - (b.price || Infinity));
+    container.innerHTML = `<div class="listings-grid">${sorted.map(l => `
+      <div class="plot-card">
+        <span class="site-tag">${l.site || l.source || ''}</span>
+        <div class="price">${l.price ? l.price.toLocaleString('fr-FR') + ' €' : 'prix ?'}</div>
+        <div class="title">${l.title || 'Annonce sans titre'}</div>
+        <div class="meta">
+          ${l.city ? `<span>${l.city}</span>` : ''}
+          ${l.surface ? `<span>${l.surface} m² hab.</span>` : ''}
+          ${l.land_surface ? `<span>${l.land_surface} m² terrain</span>` : ''}
+        </div>
+        ${l.url ? `<a href="${l.url}" target="_blank">Voir l'annonce ↗</a>` : ''}
+      </div>
+    `).join('')}</div>`;
+  } catch (err) {
+    container.innerHTML = `<div class="status-line err">Erreur de chargement: ${err.message}</div>`;
+  }
+}
+
+// ---------- Init global ----------
+function initApp() {
+  renderSecretInputs();
+  initConfigForm();
+  loadSecretsStatus();
+  loadRuns();
+  loadListings();
+}
+</script>
+</body>
+</html>

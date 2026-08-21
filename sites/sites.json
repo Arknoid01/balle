@@ -1,0 +1,46 @@
+{
+  "sites": [
+    {
+      "id": "pap",
+      "name": "PAP (Particulier à Particulier)",
+      "active": true,
+      "notes": "Que des annonces de particuliers (0 agence). Structure texte propre, pas de mur anti-bot détecté. Bon candidat prioritaire.",
+      "search_url_template": "https://www.pap.fr/annonce/vente-maisons-ain-01-g364"
+    },
+    {
+      "id": "seloger",
+      "name": "SeLoger",
+      "active": true,
+      "notes": "Gros volume (agences + particuliers). Params exacts prix/surface à valider en live, structure de base confirmée.",
+      "search_url_template": "https://www.seloger.com/recherche/achat/maison/auvergne-rhone-alpes/valserhone-01200/ad08fr37119"
+    },
+    {
+      "id": "logicimmo",
+      "name": "Logic-Immo",
+      "active": true,
+      "notes": "Même groupe que SeLoger (BFM Immo), structure proche. Bonne couverture locale sur Valserhône.",
+      "search_url_template": "https://www.logic-immo.com/recherche-immo/vente/maison/auvergne-rhone-alpes/bellegarde-sur-valserine-01200/ad08fr31"
+    },
+    {
+      "id": "bienici",
+      "name": "Bien'ici",
+      "active": true,
+      "notes": "IMPORTANT : dispose d'une API JSON publique (pas besoin de parser du HTML) — à investiguer en priorité, plus fiable qu'un scraping classique.",
+      "search_url_template": ""
+    },
+    {
+      "id": "leboncoin",
+      "name": "LeBonCoin",
+      "active": false,
+      "notes": "ATTENTION : protection anti-bot DataDome, un simple fetch sera très probablement bloqué (403). Données embarquées dans __NEXT_DATA__ JSON si accès obtenu. Désactivé par défaut, à activer seulement si une solution de contournement est mise en place (proxy résidentiel, etc.) — sinon risque de faire planter le run (comportement stop-on-fail voulu).",
+      "search_url_template": ""
+    },
+    {
+      "id": "paruvendu",
+      "name": "ParuVendu",
+      "active": true,
+      "notes": "Site suggéré en plus (pas dans la liste initiale) : bon volume sur Valserhône (28 annonces), mix particuliers/agences, structure texte simple similaire à PAP.",
+      "search_url_template": "https://www.paruvendu.fr/immobilier/vente/maison/bellegarde-sur-valserine-01200/"
+    }
+  ]
+}

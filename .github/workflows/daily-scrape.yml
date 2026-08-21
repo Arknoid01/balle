@@ -1,0 +1,48 @@
+name: Daily scrape
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-scrape
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run scraper
+        run: npm start
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LBC_EMAIL_HOST: ${{ secrets.LBC_EMAIL_HOST }}
+          LBC_EMAIL_USER: ${{ secrets.LBC_EMAIL_USER }}
+          LBC_EMAIL_PASS: ${{ secrets.LBC_EMAIL_PASS }}
+          LBC_EMAIL_SENDER: ${{ secrets.LBC_EMAIL_SENDER }}
+
+      - name: Commit and push results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ docs/results.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: update scrape results [skip ci]"
+            git push
+          fi

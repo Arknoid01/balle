@@ -1,0 +1,15 @@
+{
+  "name": "scraper-immo",
+  "version": "1.0.0",
+  "description": "Scraper immobilier perso - recherche maison Valserhône",
+  "main": "src/main.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/main.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "imapflow": "^1.7.1",
+    "mailparser": "^3.9.15"
+  }
+}

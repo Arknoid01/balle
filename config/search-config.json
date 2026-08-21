@@ -1,0 +1,9 @@
+{
+  "location": {
+    "center": "Valserhône, France",
+    "radius_km": 30
+  },
+  "budget_max": 280000,
+  "property_type": "maison",
+  "land_min_m2": 1000
+}
