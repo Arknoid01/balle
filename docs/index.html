@@ -274,11 +274,11 @@
     <div class="field-row">
       <div>
         <label for="gh-owner">Propriétaire</label>
-        <input type="text" id="gh-owner" placeholder="ton-user-github">
+        <input type="text" id="gh-owner" placeholder="Arknoid01" value="Arknoid01">
       </div>
       <div>
         <label for="gh-repo">Dépôt</label>
-        <input type="text" id="gh-repo" placeholder="scraper-immo">
+        <input type="text" id="gh-repo" placeholder="balle" value="balle">
       </div>
     </div>
     <label for="gh-token">Token</label>
@@ -383,11 +383,20 @@ async function ghFetch(path, options = {}) {
     headers: {
       'Authorization': `Bearer ${token}`,
       'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
       ...(options.body ? { 'Content-Type': 'application/json' } : {}),
       ...options.headers,
     },
+    signal: AbortSignal.timeout(15000),
   });
   return res;
+}
+
+function describeGhError(status) {
+  if (status === 401) return 'Token invalide ou expiré.';
+  if (status === 403) return 'Accès refusé — le token doit avoir le scope repo (classic) ou Contents + Actions + Secrets en lecture/écriture (fine-grained).';
+  if (status === 404) return 'Dépôt introuvable — vérifie propriétaire et nom (ex. Arknoid01 / balle).';
+  return `Erreur HTTP ${status}.`;
 }
 
 function setStatus(el, msg, ok) {
@@ -403,19 +412,31 @@ const disconnectBtn = document.getElementById('disconnect-btn');
 async function tryConnect(owner, repo, token) {
   setCreds(owner, repo, token);
   setStatus(gateStatus, 'Vérification…');
-  const res = await ghFetch('');
-  if (res.ok) {
-    setStatus(gateStatus, 'Connecté.', true);
-    document.getElementById('app').style.display = 'block';
-    document.getElementById('gh-owner').disabled = true;
-    document.getElementById('gh-repo').disabled = true;
-    document.getElementById('gh-token').disabled = true;
-    connectBtn.style.display = 'none';
-    disconnectBtn.style.display = 'inline-block';
-    initApp();
-  } else {
+  connectBtn.disabled = true;
+
+  try {
+    const res = await ghFetch('');
+    if (res.ok) {
+      setStatus(gateStatus, 'Connecté.', true);
+      document.getElementById('app').style.display = 'block';
+      document.getElementById('gh-owner').disabled = true;
+      document.getElementById('gh-repo').disabled = true;
+      document.getElementById('gh-token').disabled = true;
+      connectBtn.style.display = 'none';
+      disconnectBtn.style.display = 'inline-block';
+      initApp();
+    } else {
+      clearCreds();
+      setStatus(gateStatus, describeGhError(res.status), false);
+    }
+  } catch (err) {
     clearCreds();
-    setStatus(gateStatus, `Échec (${res.status}) — vérifie owner/repo/token.`, false);
+    const msg = err.name === 'TimeoutError'
+      ? 'Délai dépassé — vérifie ta connexion ou un bloqueur (CORS/adblock).'
+      : `Connexion impossible : ${err.message}`;
+    setStatus(gateStatus, msg, false);
+  } finally {
+    connectBtn.disabled = false;
   }
 }
 
