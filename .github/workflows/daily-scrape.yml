@@ -29,7 +29,9 @@ jobs:
         run: npm start
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_MODEL: ${{ secrets.GROQ_MODEL }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_MODEL: ${{ secrets.OPENROUTER_MODEL }}
           LBC_EMAIL_HOST: ${{ secrets.LBC_EMAIL_HOST }}
           LBC_EMAIL_USER: ${{ secrets.LBC_EMAIL_USER }}
           LBC_EMAIL_PASS: ${{ secrets.LBC_EMAIL_PASS }}
