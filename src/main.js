@@ -47,23 +47,26 @@ async function run() {
   console.log(`Run démarré — ${activeSites.length} site(s) actif(s), config:`, config);
 
   const allListings = [];
+  const runErrors = [];
 
   for (const site of activeSites) {
     await randomDelay(2, 5); // lisse le pattern de requêtes entre chaque site
 
     const result = await fetchHtml(site.search_url_template);
     if (!result.ok) {
-      console.error(`[${site.id}] fetch échoué: ${result.error}`);
-      continue; // un site en échec ne bloque pas les autres (contrairement à l'extraction LLM)
+      const msg = `[${site.id}] fetch échoué: ${result.error}`;
+      console.error(msg);
+      runErrors.push(msg);
+      continue;
     }
 
     try {
       const listings = await extractListingsFromHtml(result.html, site.id);
       allListings.push(...listings.map((l) => ({ ...l, site: site.id })));
     } catch (err) {
-      // Erreur d'extraction LLM (les deux providers ont échoué) → on stoppe tout le run
-      console.error(`Extraction impossible sur [${site.id}]: ${err.message}`);
-      process.exit(1);
+      const msg = `[${site.id}] extraction impossible: ${err.message}`;
+      console.error(msg);
+      runErrors.push(msg);
     }
   }
 
@@ -88,11 +91,23 @@ async function run() {
   fs.mkdirSync(path.dirname(SUMMARY_PATH), { recursive: true });
   fs.writeFileSync(
     SUMMARY_PATH,
-    JSON.stringify({ run_at: new Date().toISOString(), new_count: newListings.length, newListings }, null, 2),
+    JSON.stringify(
+      {
+        run_at: new Date().toISOString(),
+        new_count: newListings.length,
+        newListings,
+        errors: runErrors,
+      },
+      null,
+      2
+    ),
     'utf-8'
   );
 
-  console.log(`Run terminé — ${newListings.length} nouvelle(s) annonce(s) trouvée(s).`);
+  console.log(`Run terminé — ${newListings.length} nouvelle(s) annonce(s), ${runErrors.length} erreur(s).`);
+  if (runErrors.length > 0 && allListings.length === 0) {
+    process.exitCode = 1;
+  }
 }
 
 run().catch((err) => {

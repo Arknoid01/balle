@@ -42,7 +42,8 @@ async function extractWithFallback(cleanedText, maxRetriesPerProvider = 2) {
   const prompt = `${EXTRACTION_SCHEMA_PROMPT}\n\nTexte de l'annonce :\n"""\n${cleanedText}\n"""`;
 
   for (const provider of PROVIDERS) {
-    if (!provider.key) {
+    const apiKey = provider.key?.trim();
+    if (!apiKey) {
       console.warn(`${provider.name}: clé API absente, provider ignoré`);
       continue;
     }
@@ -52,7 +53,7 @@ async function extractWithFallback(cleanedText, maxRetriesPerProvider = 2) {
         const res = await fetch(provider.url, {
           method: 'POST',
           headers: {
-            Authorization: `Bearer ${provider.key}`,
+            Authorization: `Bearer ${apiKey}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
@@ -64,9 +65,15 @@ async function extractWithFallback(cleanedText, maxRetriesPerProvider = 2) {
           signal: AbortSignal.timeout(15000),
         });
 
+        if (res.status === 401) {
+          console.warn(
+            `${provider.name}: clé API invalide (401) — regénère-la sur console.groq.com ou openrouter.ai et mets à jour le secret GitHub`
+          );
+          break;
+        }
         if (res.status === 429 || res.status === 503) {
           console.warn(`${provider.name}: quota/limite atteint (${res.status}), switch provider`);
-          break; // inutile de retry ce provider, on passe au suivant
+          break;
         }
         if (!res.ok) {
           throw new Error(`${provider.name} HTTP ${res.status}`);
