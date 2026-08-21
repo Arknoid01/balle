@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "title": "Maison 62 m2 Valserhône (01) Exclusivité 5 pièces DPE : G 588 kWh/m²",
+    "price": 153000,
+    "city": "Valserhône",
+    "surface": 62,
+    "land_surface": null,
+    "rooms": 5,
+    "url": "https://www.paruvendu.fr/immobilier/vente/maison/1289664051A1KIVHMN000",
+    "source": "paruvendu-html",
+    "site": "paruvendu",
+    "first_seen": "2026-08-21T20:07:27.407Z"
+  },
+  {
+    "title": "Maison 130 m2 Valserhône (01) 10 pièces À Champfromier, deux appartements de type 3 d?environ 65m² chacun",
+    "price": 195000,
+    "city": "Valserhône",
+    "surface": 130,
+    "land_surface": null,
+    "rooms": 10,
+    "url": "https://www.paruvendu.fr/immobilier/vente/maison/1288644461A1KIVHMN000",
+    "source": "paruvendu-html",
+    "site": "paruvendu",
+    "first_seen": "2026-08-21T20:07:27.407Z"
+  }
+]
