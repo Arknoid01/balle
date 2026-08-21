@@ -16,7 +16,7 @@ if [[ -f "$REPO/.env" ]]; then
 fi
 
 echo "[$(date -Iseconds)] Run scraper immo — $REPO"
-npm start --silent 2>&1 || npm start
+npm start
 
 if [[ "${PUSH_RESULTS:-0}" == "1" ]]; then
   "$REPO/scripts/push-results.sh"
