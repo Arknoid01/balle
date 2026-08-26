@@ -1,8 +1,21 @@
 {
-  "run_at": "2026-08-25T05:03:13.042Z",
-  "new_count": 0,
-  "newListings": [],
+  "run_at": "2026-08-26T05:01:39.090Z",
+  "new_count": 1,
+  "newListings": [
+    {
+      "title": "Concept store d’exception en plein coeur de ville",
+      "price": 190000,
+      "city": "Besançon",
+      "surface": 172,
+      "land_surface": null,
+      "rooms": null,
+      "description_summary": "Concept store d’exception en plein coeur de ville",
+      "source": "llm:groq",
+      "site": "espacesatypiques"
+    }
+  ],
   "errors": [
-    "[pap] fetch échoué: HTTP 403"
+    "[pap] fetch échoué: HTTP 403",
+    "[logicimmo] extraction impossible: Tous les providers LLM ont échoué — arrêt du run"
   ]
 }

@@ -82,5 +82,17 @@
     "source": "paruvendu-html",
     "site": "paruvendu",
     "first_seen": "2026-08-21T20:08:23.095Z"
+  },
+  "Concept store d’exception en plein coeur de ville-190000-Besançon": {
+    "title": "Concept store d’exception en plein coeur de ville",
+    "price": 190000,
+    "city": "Besançon",
+    "surface": 172,
+    "land_surface": null,
+    "rooms": null,
+    "description_summary": "Concept store d’exception en plein coeur de ville",
+    "source": "llm:groq",
+    "site": "espacesatypiques",
+    "first_seen": "2026-08-26T05:01:39.089Z"
   }
 }
