@@ -94,5 +94,17 @@
     "source": "llm:groq",
     "site": "espacesatypiques",
     "first_seen": "2026-08-26T05:01:39.089Z"
+  },
+  {
+    "title": "Maison fin XIXe au charme ancien et à l’agencement singulier",
+    "price": 190000,
+    "city": "VANDOEUVRE LES NANCY",
+    "surface": 109,
+    "land_surface": null,
+    "rooms": null,
+    "description_summary": "Maison fin XIXe au charme ancien et à l’agencement singulier",
+    "source": "llm:groq",
+    "site": "espacesatypiques",
+    "first_seen": "2026-08-28T05:02:06.253Z"
   }
 ]
