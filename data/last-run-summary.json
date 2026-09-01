@@ -1,10 +1,8 @@
 {
-  "run_at": "2026-08-31T05:00:58.120Z",
+  "run_at": "2026-09-01T18:13:05.976Z",
   "new_count": 0,
   "newListings": [],
   "errors": [
-    "[pap] fetch échoué: HTTP 403",
-    "[seloger] fetch échoué: HTTP 403",
-    "[logicimmo] fetch échoué: HTTP 403"
+    "[pap] fetch échoué: HTTP 403"
   ]
 }
