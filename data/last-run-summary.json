@@ -1,20 +1,9 @@
 {
-  "run_at": "2026-09-11T18:47:08.619Z",
-  "new_count": 1,
-  "newListings": [
-    {
-      "title": "Appartement type loft avec cave attenante aménageable",
-      "price": 179000,
-      "city": "VILLEURBANNE",
-      "surface": 52,
-      "land_surface": null,
-      "rooms": null,
-      "description_summary": "Appartement loft avec cave aménageable à Villeurbanne",
-      "source": "llm:groq",
-      "site": "espacesatypiques"
-    }
-  ],
+  "run_at": "2026-09-12T20:46:24.236Z",
+  "new_count": 0,
+  "newListings": [],
   "errors": [
-    "[pap] fetch échoué: HTTP 403"
+    "[pap] fetch échoué: HTTP 403",
+    "[logicimmo] extraction impossible: Tous les providers LLM ont échoué — arrêt du run"
   ]
 }
