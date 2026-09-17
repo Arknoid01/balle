@@ -1,9 +1,9 @@
 {
-  "run_at": "2026-09-16T10:39:51.516Z",
+  "run_at": "2026-09-17T19:03:00.205Z",
   "new_count": 0,
   "newListings": [],
   "errors": [
     "[pap] fetch échoué: HTTP 403",
-    "[logicimmo] extraction impossible: Tous les providers LLM ont échoué — arrêt du run"
+    "[espacesatypiques] extraction impossible: Tous les providers LLM ont échoué — arrêt du run"
   ]
 }
