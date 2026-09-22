@@ -1,10 +1,12 @@
 {
-  "run_at": "2026-09-21T12:05:05.216Z",
+  "run_at": "2026-09-22T13:00:27.950Z",
   "new_count": 0,
   "newListings": [],
   "errors": [
-    "[pap] fetch échoué: HTTP 403",
-    "[seloger] extraction impossible: Tous les providers LLM ont échoué — arrêt du run",
-    "[espacesatypiques] extraction impossible: Tous les providers LLM ont échoué — arrêt du run"
+    "[pap] fetch échoué: fetch failed",
+    "[seloger] fetch échoué: fetch failed",
+    "[logicimmo] fetch échoué: fetch failed",
+    "[espacesatypiques] fetch échoué: fetch failed",
+    "[paruvendu] fetch échoué: fetch failed"
   ]
 }
