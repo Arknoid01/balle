@@ -118,5 +118,17 @@
     "source": "llm:groq",
     "site": "espacesatypiques",
     "first_seen": "2026-09-11T18:47:08.618Z"
+  },
+  {
+    "title": null,
+    "price": 190000,
+    "city": "Valserhône",
+    "surface": 93,
+    "land_surface": null,
+    "rooms": 3,
+    "description_summary": "Maison à vendre de 93 m² à Valserhône.",
+    "source": "llm:groq",
+    "site": "logicimmo",
+    "first_seen": "2026-09-24T10:41:21.508Z"
   }
 ]

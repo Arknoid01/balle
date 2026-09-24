@@ -1,9 +1,20 @@
 {
-  "run_at": "2026-09-23T10:42:18.855Z",
-  "new_count": 0,
-  "newListings": [],
+  "run_at": "2026-09-24T10:41:21.509Z",
+  "new_count": 1,
+  "newListings": [
+    {
+      "title": null,
+      "price": 190000,
+      "city": "Valserhône",
+      "surface": 93,
+      "land_surface": null,
+      "rooms": 3,
+      "description_summary": "Maison à vendre de 93 m² à Valserhône.",
+      "source": "llm:groq",
+      "site": "logicimmo"
+    }
+  ],
   "errors": [
-    "[pap] fetch échoué: HTTP 403",
-    "[espacesatypiques] extraction impossible: Tous les providers LLM ont échoué — arrêt du run"
+    "[pap] fetch échoué: HTTP 403"
   ]
 }
