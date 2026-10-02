@@ -130,5 +130,17 @@
     "source": "llm:groq",
     "site": "logicimmo",
     "first_seen": "2026-09-24T10:41:21.508Z"
+  },
+  "null-null-null": {
+    "title": null,
+    "price": null,
+    "city": null,
+    "surface": null,
+    "land_surface": null,
+    "rooms": null,
+    "description_summary": null,
+    "source": "llm:groq",
+    "site": "espacesatypiques",
+    "first_seen": "2026-10-02T14:21:14.741Z"
   }
 }

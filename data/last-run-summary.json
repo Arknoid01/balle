@@ -1,7 +1,19 @@
 {
-  "run_at": "2026-10-01T19:09:59.249Z",
-  "new_count": 0,
-  "newListings": [],
+  "run_at": "2026-10-02T14:21:14.743Z",
+  "new_count": 1,
+  "newListings": [
+    {
+      "title": null,
+      "price": null,
+      "city": null,
+      "surface": null,
+      "land_surface": null,
+      "rooms": null,
+      "description_summary": null,
+      "source": "llm:groq",
+      "site": "espacesatypiques"
+    }
+  ],
   "errors": [
     "[pap] fetch échoué: HTTP 403"
   ]
