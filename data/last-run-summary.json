@@ -1,20 +1,10 @@
 {
-  "run_at": "2026-10-02T14:21:14.743Z",
-  "new_count": 1,
-  "newListings": [
-    {
-      "title": null,
-      "price": null,
-      "city": null,
-      "surface": null,
-      "land_surface": null,
-      "rooms": null,
-      "description_summary": null,
-      "source": "llm:groq",
-      "site": "espacesatypiques"
-    }
-  ],
+  "run_at": "2026-10-04T18:52:01.300Z",
+  "new_count": 0,
+  "newListings": [],
   "errors": [
-    "[pap] fetch échoué: HTTP 403"
+    "[pap] fetch échoué: HTTP 403",
+    "[seloger] fetch échoué: HTTP 403",
+    "[logicimmo] fetch échoué: HTTP 403"
   ]
 }
