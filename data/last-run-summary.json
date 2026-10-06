@@ -1,7 +1,19 @@
 {
-  "run_at": "2026-10-05T10:33:31.197Z",
-  "new_count": 0,
-  "newListings": [],
+  "run_at": "2026-10-06T12:32:45.248Z",
+  "new_count": 1,
+  "newListings": [
+    {
+      "title": "Harmonie et quiétude en duplex au coeur du 8e",
+      "price": 235000,
+      "city": "LYON",
+      "surface": 60,
+      "land_surface": null,
+      "rooms": null,
+      "description_summary": "Harmonie et quiétude en duplex au coeur du 8e",
+      "source": "llm:groq",
+      "site": "espacesatypiques"
+    }
+  ],
   "errors": [
     "[pap] fetch échoué: HTTP 403",
     "[seloger] fetch échoué: HTTP 403",

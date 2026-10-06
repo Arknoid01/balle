@@ -142,5 +142,17 @@
     "source": "llm:groq",
     "site": "espacesatypiques",
     "first_seen": "2026-10-02T14:21:14.741Z"
+  },
+  {
+    "title": "Harmonie et quiétude en duplex au coeur du 8e",
+    "price": 235000,
+    "city": "LYON",
+    "surface": 60,
+    "land_surface": null,
+    "rooms": null,
+    "description_summary": "Harmonie et quiétude en duplex au coeur du 8e",
+    "source": "llm:groq",
+    "site": "espacesatypiques",
+    "first_seen": "2026-10-06T12:32:45.247Z"
   }
 ]
