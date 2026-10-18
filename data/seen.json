@@ -154,5 +154,17 @@
     "source": "llm:groq",
     "site": "espacesatypiques",
     "first_seen": "2026-10-06T12:32:45.247Z"
+  },
+  "3 Terrains à bâtir- Peyruis-79000-Peyruis": {
+    "title": "3 Terrains à bâtir- Peyruis",
+    "price": 79000,
+    "city": "Peyruis",
+    "surface": 549,
+    "land_surface": null,
+    "rooms": null,
+    "description_summary": null,
+    "source": "llm:groq",
+    "site": "espacesatypiques",
+    "first_seen": "2026-10-18T16:15:09.020Z"
   }
 }
