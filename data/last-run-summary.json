@@ -1,19 +1,7 @@
 {
-  "run_at": "2026-10-18T16:15:09.022Z",
-  "new_count": 1,
-  "newListings": [
-    {
-      "title": "3 Terrains à bâtir- Peyruis",
-      "price": 79000,
-      "city": "Peyruis",
-      "surface": 549,
-      "land_surface": null,
-      "rooms": null,
-      "description_summary": null,
-      "source": "llm:groq",
-      "site": "espacesatypiques"
-    }
-  ],
+  "run_at": "2026-10-19T07:53:03.354Z",
+  "new_count": 0,
+  "newListings": [],
   "errors": [
     "[pap] fetch échoué: HTTP 403",
     "[seloger] fetch échoué: HTTP 403",
