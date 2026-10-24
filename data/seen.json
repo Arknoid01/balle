@@ -166,5 +166,17 @@
     "source": "llm:groq",
     "site": "espacesatypiques",
     "first_seen": "2026-10-18T16:15:09.020Z"
+  },
+  "Appartement duplex avec terrasse tropézienne et vue Bastille et Vercors-250000-Grenoble": {
+    "title": "Appartement duplex avec terrasse tropézienne et vue Bastille et Vercors",
+    "price": 250000,
+    "city": "Grenoble",
+    "surface": 106,
+    "land_surface": null,
+    "rooms": null,
+    "description_summary": "Appartement duplex avec terrasse tropézienne et vue Bastille et Vercors",
+    "source": "llm:groq",
+    "site": "espacesatypiques",
+    "first_seen": "2026-10-24T18:27:53.073Z"
   }
 }
