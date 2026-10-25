@@ -1,19 +1,7 @@
 {
-  "run_at": "2026-10-24T18:27:53.074Z",
-  "new_count": 1,
-  "newListings": [
-    {
-      "title": "Appartement duplex avec terrasse tropézienne et vue Bastille et Vercors",
-      "price": 250000,
-      "city": "Grenoble",
-      "surface": 106,
-      "land_surface": null,
-      "rooms": null,
-      "description_summary": "Appartement duplex avec terrasse tropézienne et vue Bastille et Vercors",
-      "source": "llm:groq",
-      "site": "espacesatypiques"
-    }
-  ],
+  "run_at": "2026-10-25T10:56:00.033Z",
+  "new_count": 0,
+  "newListings": [],
   "errors": [
     "[pap] fetch échoué: HTTP 403"
   ]
