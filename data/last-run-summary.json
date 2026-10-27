@@ -1,8 +1,9 @@
 {
-  "run_at": "2026-10-26T10:13:14.551Z",
+  "run_at": "2026-10-27T06:03:26.499Z",
   "new_count": 0,
   "newListings": [],
   "errors": [
-    "[pap] fetch échoué: HTTP 403"
+    "[pap] fetch échoué: HTTP 403",
+    "[espacesatypiques] extraction impossible: Tous les providers LLM ont échoué — arrêt du run"
   ]
 }
