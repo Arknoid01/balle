@@ -178,5 +178,17 @@
     "source": "llm:groq",
     "site": "espacesatypiques",
     "first_seen": "2026-10-24T18:27:53.073Z"
+  },
+  {
+    "title": "Maison de caractère avec dépendance, garage et cour intérieure",
+    "price": 220000,
+    "city": "LEZIGNAN CORBIERES",
+    "surface": 187,
+    "land_surface": null,
+    "rooms": null,
+    "description_summary": "Maison de caractère avec dépendance, garage et cour intérieure.",
+    "source": "llm:groq",
+    "site": "espacesatypiques",
+    "first_seen": "2026-10-29T11:51:51.821Z"
   }
 ]
