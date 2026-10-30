@@ -1,15 +1,15 @@
 {
-  "run_at": "2026-10-29T11:51:51.823Z",
+  "run_at": "2026-10-30T19:41:32.428Z",
   "new_count": 1,
   "newListings": [
     {
-      "title": "Maison de caractère avec dépendance, garage et cour intérieure",
-      "price": 220000,
-      "city": "LEZIGNAN CORBIERES",
-      "surface": 187,
+      "title": "Duplex indépendant avec terrasse dans un château médiéval",
+      "price": 249000,
+      "city": "SAINT CERGUES",
+      "surface": 49.05,
       "land_surface": null,
       "rooms": null,
-      "description_summary": "Maison de caractère avec dépendance, garage et cour intérieure.",
+      "description_summary": "Duplex indépendant avec terrasse dans un château médiéval",
       "source": "llm:groq",
       "site": "espacesatypiques"
     }

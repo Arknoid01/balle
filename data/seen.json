@@ -190,5 +190,17 @@
     "source": "llm:groq",
     "site": "espacesatypiques",
     "first_seen": "2026-10-29T11:51:51.821Z"
+  },
+  "Duplex indépendant avec terrasse dans un château médiéval-249000-SAINT CERGUES": {
+    "title": "Duplex indépendant avec terrasse dans un château médiéval",
+    "price": 249000,
+    "city": "SAINT CERGUES",
+    "surface": 49.05,
+    "land_surface": null,
+    "rooms": null,
+    "description_summary": "Duplex indépendant avec terrasse dans un château médiéval",
+    "source": "llm:groq",
+    "site": "espacesatypiques",
+    "first_seen": "2026-10-30T19:41:32.427Z"
   }
 }
