@@ -1,20 +1,10 @@
 {
-  "run_at": "2026-10-30T19:41:32.428Z",
-  "new_count": 1,
-  "newListings": [
-    {
-      "title": "Duplex indépendant avec terrasse dans un château médiéval",
-      "price": 249000,
-      "city": "SAINT CERGUES",
-      "surface": 49.05,
-      "land_surface": null,
-      "rooms": null,
-      "description_summary": "Duplex indépendant avec terrasse dans un château médiéval",
-      "source": "llm:groq",
-      "site": "espacesatypiques"
-    }
-  ],
+  "run_at": "2026-10-31T11:44:37.534Z",
+  "new_count": 0,
+  "newListings": [],
   "errors": [
-    "[pap] fetch échoué: HTTP 403"
+    "[pap] fetch échoué: HTTP 403",
+    "[seloger] extraction impossible: Tous les providers LLM ont échoué — arrêt du run",
+    "[espacesatypiques] extraction impossible: Tous les providers LLM ont échoué — arrêt du run"
   ]
 }
