@@ -1,19 +1,7 @@
 {
-  "run_at": "2026-11-09T11:12:54.287Z",
-  "new_count": 1,
-  "newListings": [
-    {
-      "title": "Péniche de 130m2 Freycinet à 15 min de Paris.",
-      "price": 250000,
-      "city": "JUVISY SUR ORGE",
-      "surface": 130,
-      "land_surface": null,
-      "rooms": null,
-      "description_summary": "Péniche de 130m2 Freycinet à 15 min de Paris.",
-      "source": "llm:groq",
-      "site": "espacesatypiques"
-    }
-  ],
+  "run_at": "2026-11-10T11:39:00.040Z",
+  "new_count": 0,
+  "newListings": [],
   "errors": [
     "[pap] fetch échoué: HTTP 403"
   ]
