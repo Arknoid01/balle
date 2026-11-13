@@ -1,8 +1,9 @@
 {
-  "run_at": "2026-11-12T11:39:24.874Z",
+  "run_at": "2026-11-13T18:55:35.378Z",
   "new_count": 0,
   "newListings": [],
   "errors": [
-    "[pap] fetch échoué: HTTP 403"
+    "[pap] fetch échoué: HTTP 403",
+    "[seloger] fetch échoué: HTTP 403"
   ]
 }
