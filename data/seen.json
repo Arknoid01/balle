@@ -214,5 +214,17 @@
     "source": "llm:groq",
     "site": "espacesatypiques",
     "first_seen": "2026-11-09T11:12:54.286Z"
+  },
+  "Appartement esprit loft à Vincennes-280000-VINCENNES": {
+    "title": "Appartement esprit loft à Vincennes",
+    "price": 280000,
+    "city": "VINCENNES",
+    "surface": 44,
+    "land_surface": null,
+    "rooms": null,
+    "description_summary": "Appartement esprit loft à Vincennes, 44 m², 280 000 €",
+    "source": "llm:groq",
+    "site": "espacesatypiques",
+    "first_seen": "2026-11-18T11:33:54.289Z"
   }
 }
