@@ -1,19 +1,7 @@
 {
-  "run_at": "2026-11-18T11:33:54.290Z",
-  "new_count": 1,
-  "newListings": [
-    {
-      "title": "Appartement esprit loft à Vincennes",
-      "price": 280000,
-      "city": "VINCENNES",
-      "surface": 44,
-      "land_surface": null,
-      "rooms": null,
-      "description_summary": "Appartement esprit loft à Vincennes, 44 m², 280 000 €",
-      "source": "llm:groq",
-      "site": "espacesatypiques"
-    }
-  ],
+  "run_at": "2026-11-19T20:21:29.377Z",
+  "new_count": 0,
+  "newListings": [],
   "errors": [
     "[pap] fetch échoué: HTTP 403",
     "[seloger] fetch échoué: HTTP 403"
